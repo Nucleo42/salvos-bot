@@ -3,7 +3,7 @@ import { EventsLoader } from "@loaders/eventsLoader";
 import { CommandLoader } from "@loaders/commandsLoader";
 import { ButtonsLoader } from "@loaders/buttonsLoader";
 import { logger } from "./logging";
-import { errorWebhookLogger } from "@shared/utils/embedErrorLog";
+import { errorWebhookLogger } from "@shared/utils/errorWebhookLogger";
 
 async function bootstrap() {
   try {
