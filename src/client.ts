@@ -15,6 +15,7 @@ import {
 } from "@interfaces/commands";
 import { EventTypes } from "@interfaces/events";
 import { ButtonHandle } from "@interfaces/buttonHandle";
+import { logger } from "./logging";
 
 export class ClientDiscord extends Client {
   public commands: Collection<string, CommandType> = new Collection();
@@ -44,8 +45,8 @@ export class ClientDiscord extends Client {
   }
 
   public async start() {
+    await this.applyCommands();
     await this.login(secrets.DISCORD_TOKEN);
-    this.applyCommands();
   }
 
   public async registerEvents<K extends keyof ClientEvents>(
@@ -100,16 +101,25 @@ export class ClientDiscord extends Client {
     }
   }
 
-  public applyCommands() {
-    const listOfCommands: Array<ApplicationCommandDataResolvable> =
-      this.commands.map((command) => ({
-        ...command,
-      }));
+  public async applyCommands() {
+    try {
+      const listOfCommands: Array<ApplicationCommandDataResolvable> =
+        this.commands.map((command) => ({
+          ...command,
+        }));
 
-    this.on("ready", async () => {
+      /* this.on("ready", async () => { */ /* }) */
       await this.application?.commands.set(listOfCommands);
 
-      console.log("Commands applied successfully!");
-    });
+      logger.success({
+        prefix: "discord-commands",
+        message: `Successfully applied all commands.`,
+      });
+    } catch (error) {
+      logger.error({
+        prefix: "discord-commands",
+        message: `Error applying commands: ${error}`,
+      });
+    }
   }
 }

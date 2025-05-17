@@ -2,6 +2,7 @@ import { ClientDiscord } from "./client";
 import { EventsLoader } from "@loaders/eventsLoader";
 import { CommandLoader } from "@loaders/commandsLoader";
 import { ButtonsLoader } from "@loaders/buttonsLoader";
+import { logger } from "./logging";
 
 async function bootstrap() {
   try {
@@ -17,11 +18,24 @@ async function bootstrap() {
     await eventsLoader.registerEvents();
 
     await client.start();
-
-    console.log("Client started successfully.");
   } catch (error) {
-    console.error("Error starting the client:", error);
+    logger.error("Error during bootstrap:", error);
   }
+
+  process.on("uncaughtException", (error) => {
+    logger.error({
+      prefix: "uncaughtException",
+      message: "Error on application: " + error,
+    });
+    process.exit(1);
+  });
+
+  process.on("unhandledRejection", (reason) => {
+    logger.error({
+      prefix: "unhandled-rejection",
+      message: "Error on application: " + reason,
+    });
+  });
 }
 
 bootstrap();
