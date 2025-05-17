@@ -108,12 +108,13 @@ export class ClientDiscord extends Client {
           ...command,
         }));
 
-      /* this.on("ready", async () => { */ /* }) */
-      await this.application?.commands.set(listOfCommands);
+      this.on("ready", async () => {
+        await this.application?.commands.set(listOfCommands);
 
-      logger.success({
-        prefix: "discord-commands",
-        message: `Successfully applied all commands.`,
+        logger.success({
+          prefix: "discord-commands",
+          message: `Successfully applied all commands.`,
+        });
       });
     } catch (error) {
       logger.error({
