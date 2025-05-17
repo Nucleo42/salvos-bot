@@ -5,6 +5,7 @@ export default new Event({
   name: "messageReactionAdd",
   execute: async (interaction, user) => {
     if (user.bot) return;
+    if (!interaction.message.inGuild()) return;
     if (!interaction.emoji) return;
 
     if (interaction.emoji.name == "⭐") {
