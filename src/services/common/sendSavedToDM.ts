@@ -4,24 +4,26 @@ import {
   ButtonStyle,
   EmbedBuilder,
   User,
-  Message,
-  PartialMessage,
   DMChannel,
   PartialUser,
 } from "discord.js";
+import { FormattedMessageData } from "./messageFormatter";
+
+interface ISendSavedToDMServiceProps {
+  user: User | PartialUser;
+  formattedMessage: FormattedMessageData;
+}
 
 class SendSavedToDMService {
-  public async execute(
-    message: Message<boolean>,
-    user: User | PartialUser,
-    isDM: boolean = false,
-    guildId: string | null = null,
-  ): Promise<void> {
+  public async execute({
+    user,
+    formattedMessage,
+  }: ISendSavedToDMServiceProps): Promise<void> {
     const dmChannel = await this.createUserDMChannel(user);
     if (!dmChannel) return;
 
-    const components = this.buildActionRow(message, isDM, guildId);
-    const embed = this.buildEmbed(message, isDM);
+    const components = this.buildActionRow(formattedMessage.messageLink);
+    const embed = this.buildEmbed(formattedMessage);
 
     await dmChannel.send({
       embeds: [embed],
@@ -41,9 +43,7 @@ class SendSavedToDMService {
   }
 
   private buildActionRow(
-    message: Message<boolean>,
-    isDM: boolean,
-    guildId: string | null,
+    messageLink: string | null,
   ): ActionRowBuilder<ButtonBuilder> {
     const components: ButtonBuilder[] = [
       new ButtonBuilder()
@@ -53,11 +53,10 @@ class SendSavedToDMService {
         .setEmoji("🗑️"),
     ];
 
-    const messageLink = this.getMessageLink(message, isDM, guildId);
     if (messageLink) {
       components.push(
         new ButtonBuilder()
-          .setLabel("Ver original")
+          .setLabel("Acessar original")
           .setStyle(ButtonStyle.Link)
           .setEmoji("🔗")
           .setURL(messageLink),
@@ -67,55 +66,17 @@ class SendSavedToDMService {
     return new ActionRowBuilder<ButtonBuilder>().setComponents(components);
   }
 
-  private getMessageLink(
-    message: Message<boolean>,
-    isDM: boolean,
-    guildId: string | null,
-  ): string | null {
-    const hasGuild = guildId || message.guild?.id;
+  private buildEmbed(data: FormattedMessageData): EmbedBuilder {
+    const embed = new EmbedBuilder()
+      .setColor("#9b33da")
+      .setAuthor({ name: data.authorName, iconURL: data.authorIconURL })
+      .setDescription(data.content);
 
-    if (isDM || !hasGuild) return null;
-    return `https://discord.com/channels/${hasGuild}/${message.channelId}/${message.id}`;
-  }
-
-  private buildEmbed(
-    message: Message<boolean> | PartialMessage,
-    isDM: boolean,
-  ): EmbedBuilder {
-    const content = this.getMessageContent(message);
-    const hasGuild = !!message.guild;
-
-    const authorName = hasGuild
-      ? `${message.guild?.name || "Desconhecido"} > ${
-          message.guild?.channels.cache.get(message.channelId)?.name ||
-          "Desconhecido"
-        }`
-      : isDM
-        ? `${message.author?.username || "Desconhecido"} > DM`
-        : `Servidor Privado > ${message.author?.username || "Desconhecido"}`;
-
-    const authorIconURL = hasGuild
-      ? message.guild?.iconURL() || ""
-      : message.author?.displayAvatarURL?.() || "";
-
-    return new EmbedBuilder()
-      .setColor("Purple")
-      .setAuthor({ name: authorName, iconURL: authorIconURL })
-      .setDescription(content);
-  }
-
-  private getMessageContent(
-    message: Message<boolean> | PartialMessage,
-  ): string {
-    if (message.content?.trim()) {
-      return message.content;
+    if (data.tags) {
+      embed.addFields({ name: "🏷️ Tags:", value: data.tags, inline: true });
     }
 
-    if (message.attachments.size > 0) {
-      return [...message.attachments.values()].map((a) => a.url).join("\n");
-    }
-
-    return "*[Mensagem sem conteúdo]*";
+    return embed;
   }
 }
 
