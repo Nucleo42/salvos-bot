@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx --env-file=.env --watch src/index.ts",
     "start": "node --env-file=.env .",
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "rm -rf dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
