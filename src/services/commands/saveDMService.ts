@@ -1,7 +1,8 @@
+import { messageFormatter } from "@services/common/messageFormatter";
 import { sendSavedToDMService } from "@services/common/sendSavedToDM";
 import { CacheType, CommandInteraction, MessageFlags } from "discord.js";
 
-class SaveInDMService {
+class SaveDMService {
   public async save(interaction: CommandInteraction<CacheType>) {
     if (!interaction.isMessageContextMenuCommand()) return;
     await interaction.deferReply({
@@ -27,7 +28,17 @@ class SaveInDMService {
       return;
     }
 
-    await sendSavedToDMService.execute(message, user, isDm, guildId);
+    const data = messageFormatter.formatMessageData(
+      message,
+      isDm,
+      undefined,
+      guildId,
+    );
+
+    await sendSavedToDMService.execute({
+      user,
+      formattedMessage: data,
+    });
 
     await interaction.editReply({
       content: "Mensagem salva na DM.",
@@ -35,4 +46,4 @@ class SaveInDMService {
   }
 }
 
-export const saveInDMService = new SaveInDMService();
+export const saveDMService = new SaveDMService();
