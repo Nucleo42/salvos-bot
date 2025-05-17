@@ -9,7 +9,7 @@ export default new Event({
 
     logger.info({
       prefix: "discord-startup",
-      message: `${chalk.green(`${app.user.username} is ready!`)} 
+      message: `${chalk.rgb(5, 221, 233)(`${app.user.username} ${chalk.green("is ready!")}`)} 
 ${chalk.white("-----------------------------------------------")}
 ${chalk.blue("ID:")} ${app.user.id}
 ${chalk.blue("Guilds:")} ${app.guilds.cache.size}
