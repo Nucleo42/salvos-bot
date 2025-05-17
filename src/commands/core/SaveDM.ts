@@ -5,7 +5,7 @@ import {
   InteractionContextType,
 } from "discord.js";
 
-import { saveInDMService } from "@services/commands/saveInDMService";
+import { saveDMService } from "@services/commands/saveDMService";
 
 export default new Command({
   name: "Salvar Na DM",
@@ -19,6 +19,6 @@ export default new Command({
     ApplicationIntegrationType.GuildInstall,
   ],
   execute: async ({ interaction }) => {
-    await saveInDMService.save(interaction);
+    await saveDMService.save(interaction);
   },
 });
