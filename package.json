@@ -34,7 +34,7 @@
     "bufferutil": "^4.0.9",
     "discord.js": "^14.17.3",
     "dotenv": "^16.4.7",
-    "level": "^9.0.0",
+    "level": "^10.0.0",
     "node-cron": "^3.0.3",
     "signale": "^1.4.0",
     "tsc-alias": "1.8.11",

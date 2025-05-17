@@ -33,6 +33,9 @@
       "@services/*": [
         "src/services/*"
       ],
+      "@logging/*": [
+        "src/logging/*"
+      ],
       "@constants/*": [
         "src/shared/constants/*"
       ],
