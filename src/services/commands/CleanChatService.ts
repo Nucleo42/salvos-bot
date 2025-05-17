@@ -1,4 +1,3 @@
-import { sendToWebhook } from "@shared/utils/embedErrorLog";
 import { sleep } from "@shared/utils/sleep";
 import { CommandInteraction, MessageFlags } from "discord.js";
 
@@ -24,18 +23,13 @@ class CleanChatService {
 
     let deleted = 0;
     for (const message of messages.values()) {
-      try {
-        if (message.author.id !== interaction.client.user?.id) {
-          continue;
-        }
-
-        await message.delete();
-        deleted++;
-        await sleep(1000);
-      } catch (error) {
-        console.error(`Erro ao apagar mensagem ${message.id}:`, error);
-        await sendToWebhook(error as string);
+      if (message.author.id !== interaction.client.user?.id) {
+        continue;
       }
+
+      await message.delete();
+      deleted++;
+      await sleep(1000);
     }
 
     await interaction.followUp({
