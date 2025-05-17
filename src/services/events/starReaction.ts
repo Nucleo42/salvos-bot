@@ -6,6 +6,7 @@ import {
   PartialUser,
 } from "discord.js";
 import { sendSavedToDMService } from "@services/common/sendSavedToDM";
+import { messageFormatter } from "@services/common/messageFormatter";
 
 export class StarReactionService {
   public async handleReaction(
@@ -17,7 +18,12 @@ export class StarReactionService {
 
     const message = validReaction.message as Message<boolean>;
 
-    await sendSavedToDMService.execute(message, user, false);
+    const data = messageFormatter.formatMessageData(message, false);
+
+    await sendSavedToDMService.execute({
+      user,
+      formattedMessage: data,
+    });
   }
 
   private async validateAndFetchReaction(
