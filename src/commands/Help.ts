@@ -8,7 +8,7 @@ import { helpService } from "@services/commands/helpService";
 
 export default new Command({
   name: "help",
-  description: "Entender como usar salvar",
+  description: "Entender como usar o app/bot",
   type: ApplicationCommandType.ChatInput,
   contexts: [InteractionContextType.Guild, InteractionContextType.BotDM],
   integrationTypes: [

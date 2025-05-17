@@ -4,14 +4,14 @@ class HelpService {
   public async execute(interaction: CommandInteraction) {
     const embed = new EmbedBuilder()
       .setColor("Green")
-      .setTitle("Como usar o comando de salvar")
-      .setDescription("Aqui estão algumas dicas para usar o comando de salvar:")
+      .setTitle("Como usar o app para salvar suas mensagens")
       .addFields({
-        name: "Salvar uma mensagem",
-        value: "Clique botão direto** na mensagem > Apps > **Salvar Na DM",
+        name: "Salvar uma mensagem:",
+        value:
+          "**Clique botão direto** na mensagem > **Apps** > **Salvar Na DM**",
       })
       .addFields({
-        name: "Se o bot estiver no servidor",
+        name: "Se o bot estiver no servidor:",
         value: "**Reaja** com estrela (⭐) em uma mensagem",
       })
       .setFooter({
