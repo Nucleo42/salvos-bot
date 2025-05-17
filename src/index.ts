@@ -3,6 +3,7 @@ import { EventsLoader } from "@loaders/eventsLoader";
 import { CommandLoader } from "@loaders/commandsLoader";
 import { ButtonsLoader } from "@loaders/buttonsLoader";
 import { logger } from "./logging";
+import { errorWebhookLogger } from "@shared/utils/embedErrorLog";
 
 async function bootstrap() {
   try {
@@ -27,7 +28,9 @@ async function bootstrap() {
       prefix: "uncaughtException",
       message: "Error on application: " + error,
     });
-    process.exit(1);
+    errorWebhookLogger.send(
+      `Error on application: ${error instanceof Error ? error.message : String(error)}`,
+    );
   });
 
   process.on("unhandledRejection", (reason) => {
@@ -35,6 +38,10 @@ async function bootstrap() {
       prefix: "unhandled-rejection",
       message: "Error on application: " + reason,
     });
+
+    errorWebhookLogger.send(
+      `Error on application: ${reason instanceof Error ? reason.message : String(reason)}`,
+    );
   });
 }
 
